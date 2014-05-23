@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="plugin.video.dmax-it" name="DMAX Italia" version="0.0.1" provider-name="lorenzo">
+  <requires>
+	<import addon="xbmc.python" version="2.1.0"/>
+    <import addon="script.module.pyamf" version="0.6.1"/>
+  </requires>
+  <extension point="xbmc.python.pluginsource" library="default.py">
+    <provides>video</provides>
+  </extension>
+  <extension point="xbmc.addon.metadata">
+  	<language>it</language>
+    <summary lang="en">DMAX Italy</summary>
+	<summary lang="it">DMAX Italia</summary>
+    <description lang="en">DMAX Italy</description>
+    <description lang="it">DMAX Italia</description>
+    <platform>all</platform>
+    <license>GNU GENERAL PUBLIC LICENSE. Version 2, June 1991</license>
+	<website>https://github.com/LorenzoRogai/DmaxItaXBMCPlugin</website>
+	<source>https://github.com/LorenzoRogai/DmaxItaXBMCPlugin</source>
+	<email>lorenzorogai@hotmail.it</email>
+  </extension>
+</addon>
