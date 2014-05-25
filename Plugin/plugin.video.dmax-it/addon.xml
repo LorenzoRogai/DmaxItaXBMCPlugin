@@ -10,7 +10,7 @@
   <extension point="xbmc.addon.metadata">
   	<language>it</language>
     <summary lang="en">DMAX Italy</summary>
-	<summary lang="it">DMAX Italia</summary>
+    <summary lang="it">DMAX Italia</summary>
     <description lang="en">DMAX Italy</description>
     <description lang="it">DMAX Italia</description>
     <platform>all</platform>
