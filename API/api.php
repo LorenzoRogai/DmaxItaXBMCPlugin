@@ -21,10 +21,8 @@ if (isset($_GET["letter"])) {
             $array[rtrim($season->children(0)->children(0)->plaintext)] = $season->children(0)->href;
         }
         echo json_encode($array);
-    }
-    else
-    {      
-        episodes("/video/programmi/" . $show, true);   
+    } else {
+        episodes("/video/programmi/" . $show, true);
     }
 } else if (isset($_GET["episodes"])) {
     episodes($_GET["episodes"]);
@@ -44,16 +42,20 @@ if (isset($_GET["letter"])) {
     echo json_encode($array);
 }
 
-function episodes($link, $noseason = false) {  
+function episodes($link, $noseason = false) {
     $html = file_get_html("http://www.dmax.it" . $link);
-    $array = array();       
+    $array = array();
     foreach ($html->find("ol[class^=" . ($noseason == false ? "list medium episodes" : "list medium") . "]", 0)->find("li") as $episode) {
         $obj = $episode->children(0);
         $link = $obj->href;
         $img = $obj->children(0)->src;
         $title = $obj->title;
+        $duration = $obj->children(2)->plaintext;
+        $desc = $obj->children(3)->children(2)->plaintext;
         $array[$title][] = $link;
         $array[$title][] = $img;
+        $array[$title][] = $desc;
+        $array[$title][] = $duration;
     }
     echo json_encode($array);
 }

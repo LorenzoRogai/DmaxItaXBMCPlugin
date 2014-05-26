@@ -37,8 +37,10 @@ def showPage(show):
         for episode in sorted(json):
             title = episode
             eplink = json[episode][0]
-            img = json[episode][1]       
-            addDirectoryItem(title, {"action" : "episode", "link": eplink}, img, isFolder=False)
+            img = json[episode][1]      
+            desc = json[episode][2] 
+            duration = json[episode][3]
+            addDirectoryItem(title, {"action" : "episode", "link": eplink}, img, False, desc, duration)
     xbmcplugin.endOfDirectory(thisPlugin)
     
 def showPageSeason(link):       
@@ -46,8 +48,10 @@ def showPageSeason(link):
     for episode in sorted(json):
         title = episode
         eplink = json[episode][0]
-        img = json[episode][1]       
-        addDirectoryItem(title, {"action" : "episode", "link": eplink}, img, isFolder=False)
+        img = json[episode][1]    
+        desc = json[episode][2] 
+        duration = json[episode][3]
+        addDirectoryItem(title, {"action" : "episode", "link": eplink}, img, False, desc, duration)
     xbmcplugin.endOfDirectory(thisPlugin)
     
 def showEpisode(link):
@@ -111,8 +115,12 @@ def getJson(link):
     response = urllib2.urlopen(link)
     return json.load(response) 
     
-def addDirectoryItem(name, parameters={}, pic="", isFolder=True):
+def addDirectoryItem(name, parameters={}, pic="", isFolder=True, desc = "", duration = ""):
     li = xbmcgui.ListItem(name, iconImage="DefaultFolder.png", thumbnailImage=pic)
+    if duration and desc:
+        li.setInfo(type="Video", infoLabels={"title": name, "plot": desc, "duration": duration})
+    if duration:
+        li.addStreamInfo("video", {"duration": duration})
     if not isFolder:
         li.setProperty('IsPlayable', 'true')
     url = sys.argv[0] + '?' + urllib.urlencode(parameters)
