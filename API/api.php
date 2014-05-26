@@ -14,15 +14,40 @@ if (isset($_GET["letter"])) {
     $show = $_GET["seasons"];
     $html = file_get_html("http://www.dmax.it/video/programmi/" . $show);
     $array = array();
-    foreach ($html->find("div#seasons", 0)->find("ul", 0)->children as $season) {
-        $array[rtrim($season->children(0)->children(0)->plaintext)] = $season->children(0)->href;
+    $obj = $html->find("div#seasons", 0);
+    if ($obj != null) {
+        $obj = $obj->find("ul", 0)->children;
+        foreach ($obj as $season) {
+            $array[rtrim($season->children(0)->children(0)->plaintext)] = $season->children(0)->href;
+        }
+        echo json_encode($array);
     }
-    echo json_encode($array);
+    else
+    {      
+        episodes("/video/programmi/" . $show, true);   
+    }
 } else if (isset($_GET["episodes"])) {
-    $link = $_GET["episodes"];
+    episodes($_GET["episodes"]);
+} else if (isset($_GET["episode"])) {
+    $link = $_GET["episode"];
     $html = file_get_html("http://www.dmax.it" . $link);
     $array = array();
-    foreach ($html->find("ol[class^=list medium episodes]", 0)->find("li") as $episode) {
+    $array[] = $html->find("param[name^=@videoPlayer]", 0)->value;
+    echo json_encode($array);
+} else {
+    $html = file_get_html("http://www.dmax.it/video/programmi/");
+    $array = array();
+    foreach ($html->find('h3.section-title') as $letter) {
+        $letter = $letter->plaintext;
+        $array[] = $letter;
+    }
+    echo json_encode($array);
+}
+
+function episodes($link, $noseason = false) {  
+    $html = file_get_html("http://www.dmax.it" . $link);
+    $array = array();       
+    foreach ($html->find("ol[class^=" . ($noseason == false ? "list medium episodes" : "list medium") . "]", 0)->find("li") as $episode) {
         $obj = $episode->children(0);
         $link = $obj->href;
         $img = $obj->children(0)->src;
@@ -32,19 +57,5 @@ if (isset($_GET["letter"])) {
     }
     echo json_encode($array);
 }
-else if (isset($_GET["episode"])) {
-    $link = $_GET["episode"];
-    $html = file_get_html("http://www.dmax.it" . $link);
-    $array = array();
-    $array[] = $html->find("param[name^=@videoPlayer]", 0)->value;    
-    echo json_encode($array);
-}else {
-    $html = file_get_html("http://www.dmax.it/video/programmi/");
-    $array = array();  
-    foreach ($html->find('h3.section-title') as $letter) {
-        $letter = $letter->plaintext;
-        $array[] = $letter;        
-    }
-    echo json_encode($array);
-}
+
 ?>

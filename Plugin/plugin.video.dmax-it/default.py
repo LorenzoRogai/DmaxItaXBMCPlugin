@@ -29,9 +29,16 @@ def showLetter(letter):
     xbmcplugin.endOfDirectory(thisPlugin)
     
 def showPage(show):       
-    json = getJson(apiUrl + "?seasons=" + show)
-    for seasonname, seasonlink in sorted(json.iteritems()):
-        addDirectoryItem(seasonname, {"action" : "season", "link": seasonlink})     
+    json = getJson(apiUrl + "?seasons=" + show)   
+    if ("Stagione" in str(json.items()[0][0])):        
+        for seasonname, seasonlink in sorted(json.iteritems()):
+            addDirectoryItem(seasonname, {"action" : "season", "link": seasonlink})     
+    else:
+        for episode in sorted(json):
+            title = episode
+            eplink = json[episode][0]
+            img = json[episode][1]       
+            addDirectoryItem(title, {"action" : "episode", "link": eplink}, img, isFolder=False)
     xbmcplugin.endOfDirectory(thisPlugin)
     
 def showPageSeason(link):       
