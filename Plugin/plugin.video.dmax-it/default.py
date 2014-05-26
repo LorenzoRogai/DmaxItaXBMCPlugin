@@ -52,7 +52,7 @@ def showEpisode(link):
     video = play(const, playerID, videoId, publisherID);
     playlistContent.append(video)
   
-    return playPlaylist(link, playlistContent)
+    return playPlaylist(playlistContent)
 
 def build_amf_request(const, playerID, videoPlayer, publisherID):
     env = remoting.Envelope(amfVersion=3)
@@ -92,38 +92,13 @@ def play(const, playerID, videoPlayer, publisherID):
     streamName = streamName + rtmpdata['displayName'] 
     return [streamName, streamUrl];
 
-def playPlaylist(playlistLink, playlistContent):    
-    global thisPlugin
-    playlist = "stack://";
-    for i in range(len(playlistContent)):
-        playlist += playlistContent[i][1];
-        if(i!=len(playlistContent)-1):
-            playlist += " , ";
-
-    listitem = xbmcgui.ListItem(path=playlist)
-    return xbmcplugin.setResolvedUrl(thisPlugin, True, listitem)
-
-def playPlaylistOff(playlistLink, playlistContent):    
-    player = xbmc.Player();
-    
-    playerItem = xbmcgui.ListItem(playlistLink);
-    playlist = xbmc.PlayList(xbmc.PLAYLIST_VIDEO);
-    playlist.clear();
-    print "playPlaylist";
-    
-    for link in playlistContent:
-        listItem = xbmcgui.ListItem(link[0]);
-        listItem.setProperty("PlayPath", link[1]);
-        listItem.addStreamInfo('video',{})
-        playlist.add(url=link[1], listitem=listItem);
-    
-    player.pause()     
-    xbmc.sleep(100)   
-    player.play(playlist, playerItem)   
-    #xbmc.sleep(100) #Wait for Player to open
-    
-    #xbmc.sleep(100)
-    #player.play() #Start playing  
+def playPlaylist(playlistContent):    
+    item = xbmcgui.ListItem(path=playlistContent[0][1])    
+    xbmcplugin.setResolvedUrl(handle=thisPlugin, succeeded=True, listitem=item)
+    xbmc.sleep(4000) 
+    xbmc.executebuiltin('Notification(Informazione!,Aspetta 10 secondi per caricare il buffer)') 
+    xbmc.sleep(10000)    
+    xbmc.executebuiltin('XBMC.PlayerControl(Play)')   
     
 def getJson(link):
     response = urllib2.urlopen(link)
